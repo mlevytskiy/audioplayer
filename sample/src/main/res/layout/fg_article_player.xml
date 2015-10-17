@@ -67,7 +67,7 @@
             android:layout_height="48dp"
             android:layout_marginRight="20dp"
             android:background="@drawable/bt_1"
-            android:src="@drawable/ic_skip_previous_white_48dp"/>
+            android:src="@drawable/selector_prev_word"/>
 
         <ToggleButton
             android:id="@+id/play_pause"
@@ -88,7 +88,7 @@
             android:layout_height="48dp"
             android:layout_marginRight="20dp"
             android:background="@drawable/bt_1"
-            android:src="@drawable/ic_skip_next_white_48dp"/>
+            android:src="@drawable/selector_next_word"/>
         <ImageView
             android:id="@+id/iv_fastforward"
             android:layout_width="wrap_content"
@@ -101,30 +101,41 @@
         android:layout_width="fill_parent"
         android:layout_height="36dp"
         android:layout_marginTop="5dp"
-        android:gravity="center_vertical|center_horizontal"
+        android:gravity="center"
         android:orientation="horizontal">
-        <ImageView
-            android:id="@+id/iv_highlight"
-            android:layout_width="wrap_content"
+
+        <ToggleButton
+            android:id="@+id/highlight"
+            android:layout_width="36dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/bt_1"
-            android:src="@drawable/ic_lightbulb_white_36dp"/>
+            android:background="@drawable/toggle_button_selector_highlight"
+            android:text=""
+            android:textOff=""
+            android:textOn=""
+            android:checked="true" />
+
+        <View
+            android:layout_width="30dp"
+            android:layout_height="match_parent" />
+
         <ImageView
             android:id="@+id/iv_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
             android:background="@drawable/bt_1"
-            android:src="@drawable/ic_chevron_double_down_white_36dp"/>
+            android:src="@drawable/ic_chevron_double_down_white_36dp" />
+
+        <View
+            android:layout_width="30dp"
+            android:layout_height="match_parent" />
+
         <ImageView
             android:id="@+id/iv_repeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
             android:background="@drawable/bt_1"
             android:src="@drawable/ic_repeat_off_white_36dp"/>
+
     </LinearLayout>
 </merge>
     

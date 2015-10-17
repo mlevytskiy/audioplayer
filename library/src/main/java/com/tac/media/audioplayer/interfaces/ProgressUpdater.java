@@ -6,6 +6,4 @@ package com.tac.media.audioplayer.interfaces;
  */
 public interface ProgressUpdater {
     void onProgressUpdate(int progress);
-
-    void onFinish();
 }

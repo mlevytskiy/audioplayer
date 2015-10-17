@@ -10,15 +10,27 @@ import appicon.funakoshi.com.apploadiconasync.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    private PlayerView playerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ((PlayerView) findViewById(R.id.player)).setUri(Mock.MP3_URI);
+        playerView = ((PlayerView) findViewById(R.id.player));
+        playerView.setUri(Mock.MP3_URI);
     }
 
     public void onClickShowPlayer(View view) {
         findViewById(R.id.player).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!playerView.onClickBackButton()) {
+            super.onBackPressed();
+        } else {
+            //do nothing
+        }
     }
 
 }

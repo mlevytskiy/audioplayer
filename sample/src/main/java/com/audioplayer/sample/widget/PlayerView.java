@@ -7,6 +7,7 @@ import android.support.annotation.UiThread;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
@@ -14,7 +15,10 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tac.media.audioplayer.AudioPlayer;
 import com.tac.media.audioplayer.enums.State;
 import com.tac.media.audioplayer.interfaces.ProgressUpdater;
+import com.tac.media.audioplayer.interfaces.StateNotifier;
 import com.tac.media.audioplayer.interfaces.TimeUpdater;
+
+import java.util.concurrent.TimeUnit;
 
 import appicon.funakoshi.com.apploadiconasync.R;
 
@@ -29,6 +33,9 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
     private ToggleButton playPause;
     private TimeTextView currentTime;
     private TimeTextView totalTime;
+
+    private ImageView nextWord;
+    private ImageView prevWord;
 
     public PlayerView(Context context) {
         super(context);
@@ -56,15 +63,18 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
         playPause = ((ToggleButton) findViewById(R.id.play_pause));
         currentTime = (TimeTextView) findViewById(R.id.tvCurrentTime);
         totalTime = (TimeTextView) findViewById(R.id.tvTotalTime);
+        prevWord = (ImageView) findViewById(R.id.iv_step_back);
+        nextWord = (ImageView) findViewById(R.id.iv_step_forward);
 
         findViewById(R.id.iv_close).setOnClickListener(this);
         findViewById(R.id.iv_repeat).setOnClickListener(this);
-        findViewById(R.id.iv_highlight).setOnClickListener(this);
         findViewById(R.id.iv_fastforward).setOnClickListener(this);
-        findViewById(R.id.iv_step_forward).setOnClickListener(this);
-        findViewById(R.id.iv_step_back).setOnClickListener(this);
+        prevWord.setOnClickListener(this);
+        nextWord.setOnClickListener(this);
         findViewById(R.id.iv_fastbackward).setOnClickListener(this);
+
         playPause.setOnCheckedChangeListener(this);
+        ((ToggleButton) findViewById(R.id.highlight)).setOnCheckedChangeListener(this);
 
         progressBar = ((RoundCornerProgressBar) findViewById(R.id.progresBar));
 
@@ -76,10 +86,22 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
                 progressBar.setProgress(progress);
             }
 
+        });
+
+        audioPlayer.setStateUpdater(new StateNotifier() {
             @Override
-            public void onFinish() {
-                progressBar.setProgress(0);
-                currentTime.resetTime();
+            public void onStart() {
+                totalTime.setTime(audioPlayer.getDuration());
+            }
+
+            @Override
+            public void onPause() {
+                //do nothing
+            }
+
+            @Override
+            public void onStop() {
+                reset();
             }
         });
 
@@ -107,9 +129,11 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
 
     @Override
     public void onClick(View v) {
+        int millis;
         switch (v.getId()) {
             case R.id.iv_fastbackward :
-
+                millis = audioPlayer.getCurrentProgressInMillis();
+                audioPlayer.seekToInMillis(millis - (int) TimeUnit.SECONDS.toMillis(30));
                 break;
             case R.id.iv_step_back :
 
@@ -118,13 +142,12 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
 
                 break;
             case R.id.iv_fastforward : // интервал перемотки, в секундах
-
-                break;
-            case R.id.iv_highlight : // включить выключить подсветку слов
-
+                millis = audioPlayer.getCurrentProgressInMillis();
+                audioPlayer.seekToInMillis(millis + (int) TimeUnit.SECONDS.toMillis(30));
                 break;
             case R.id.iv_repeat :
-
+                reset();
+                playPause.setChecked(false);
                 break;
             case R.id.iv_close :
                 PlayerView.this.setVisibility(View.GONE);
@@ -155,11 +178,29 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
         audioPlayer.reset();
     }
 
+    public boolean onClickBackButton() {
+        if (getVisibility() == View.VISIBLE) {
+            reset();
+            hide();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void hide() {
+        setVisibility(View.GONE);
+    }
+
+    public void show() {
+        setVisibility(View.VISIBLE);
+    }
+
     @UiThread
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
-            case R.id.play_pause: {
+            case R.id.play_pause : {
                 if (isChecked) {
                     audioPlayer.pause();
                 } else {
@@ -171,7 +212,10 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
                 }
                 break;
             }
-
+            case R.id.highlight : {
+                prevWord.setEnabled(isChecked);
+                nextWord.setEnabled(isChecked);
+            }
         }
     }
 }

@@ -16,6 +16,7 @@ public class Mock {
         String path = Environment.getExternalStorageDirectory()
                 + File.separator + Environment.DIRECTORY_MUSIC;
         musicFile = new File(path, "test.mp3");
+//        musicFile = new File(path, "test2.mp3"); //shot music
     }
 
     public static final Uri MP3_URI = Uri.fromFile(musicFile);

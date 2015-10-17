@@ -63,22 +63,21 @@ public class AudioPlayer implements OnPreparedListener, OnErrorListener, MusicFo
 
     private AudioManager mAudioManager;
 
+    private volatile int currentProgressInMillis;
+
     private TimerTask mUpdateProgressTask = new TimerTask() {
         public void run() {
             if (mPlayer != null) {
                 int duration = mPlayer.getDuration();
                 int currentPosition = mPlayer.getCurrentPosition();
+                currentProgressInMillis = currentPosition;
                 mProgressUpdate.onProgressUpdate(HUNDRED_PERCENT * currentPosition / duration);
-                if (currentPosition == duration) {
-                    mProgressUpdate.onFinish();
-                } else {
-                    if(mTimeUpdater!=null) {
-                        mTimeUpdater.updateTime(currentPosition);
-                        if (currentPosition == 0) {
-                            mTimeUpdater.onStart(duration);
-                        }
-                        mTimeUpdater.changeDuration(duration);
+                if (mTimeUpdater != null) {
+                    mTimeUpdater.updateTime(currentPosition);
+                    if (currentPosition == 0) {
+                        mTimeUpdater.onStart(duration);
                     }
+                    mTimeUpdater.changeDuration(duration);
                 }
 
                 mHandler.postDelayed(mUpdateProgressTask, UPDATE_PERIOD);
@@ -306,7 +305,18 @@ public class AudioPlayer implements OnPreparedListener, OnErrorListener, MusicFo
     @Override
     public void seekTo(int progress) {
         double progressInMillis = (progress/100.0)*mPlayer.getDuration();
-        mPlayer.seekTo((int) progressInMillis);
+        seekToInMillis((int) progressInMillis);
+    }
+
+    public int getCurrentProgressInMillis() {
+        return currentProgressInMillis;
+    }
+
+    public void seekToInMillis(int millis) {
+        currentProgressInMillis = millis;
+        mPlayer.seekTo(millis);
+        mTimeUpdater.updateTime(millis);
+        mProgressUpdate.onProgressUpdate(HUNDRED_PERCENT * currentProgressInMillis / getDuration());
     }
 
     public void setUpdatePeriod(int value) {

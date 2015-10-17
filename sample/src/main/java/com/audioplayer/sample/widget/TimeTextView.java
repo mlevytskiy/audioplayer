@@ -16,20 +16,20 @@ public class TimeTextView extends TextView {
 
     public TimeTextView(Context context) {
         super(context);
-        init(context);
+        init();
     }
 
     public TimeTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
     public TimeTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
+    private void init() {
         resetTime();
     }
 

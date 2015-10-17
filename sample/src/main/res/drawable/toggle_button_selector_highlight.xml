@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:state_pressed="false" >
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/ic_lightbulb_white_36dp" />
+    </item>
+    <item android:state_checked="false" android:state_pressed="false" >
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/ic_lightbulb_outline_white_36dp" />
+    </item>
+
+    <item android:state_checked="true" android:state_pressed="true" >
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+            <item android:drawable="@color/md_grey_500" />
+            <item>
+                <bitmap
+                    android:gravity="center"
+                    android:src="@drawable/ic_lightbulb_white_36dp" />
+            </item>
+        </layer-list>
+    </item>
+
+    <item android:state_checked="false" android:state_pressed="true" >
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+            <item android:drawable="@color/md_grey_500" />
+            <item>
+                <bitmap
+                    android:gravity="center"
+                    android:src="@drawable/ic_lightbulb_outline_white_36dp" />
+            </item>
+        </layer-list>
+    </item>
+
+</selector>
