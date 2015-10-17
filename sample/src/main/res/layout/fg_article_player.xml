@@ -24,12 +24,12 @@
         android:layout_height="24dp"
         android:orientation="horizontal">
 
-        <TextView
+        <com.audioplayer.sample.widget.TimeTextView
             android:id="@+id/tvCurrentTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
-            android:text="00:00" android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@android:color/white" />
 
         <LinearLayout
@@ -37,12 +37,12 @@
             android:layout_height="wrap_content"
             android:gravity="right" android:orientation="horizontal">
 
-            <TextView
+            <com.audioplayer.sample.widget.TimeTextView
                 android:id="@+id/tvTotalTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp"
-                android:text="00:00" android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>

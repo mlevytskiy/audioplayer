@@ -69,10 +69,18 @@ public class AudioPlayer implements OnPreparedListener, OnErrorListener, MusicFo
                 int duration = mPlayer.getDuration();
                 int currentPosition = mPlayer.getCurrentPosition();
                 mProgressUpdate.onProgressUpdate(HUNDRED_PERCENT * currentPosition / duration);
-                if(mTimeUpdater!=null) {
-                    mTimeUpdater.updateTime(currentPosition);
-                    mTimeUpdater.changeDuration(duration);
+                if (currentPosition == duration) {
+                    mProgressUpdate.onFinish();
+                } else {
+                    if(mTimeUpdater!=null) {
+                        mTimeUpdater.updateTime(currentPosition);
+                        if (currentPosition == 0) {
+                            mTimeUpdater.onStart(duration);
+                        }
+                        mTimeUpdater.changeDuration(duration);
+                    }
                 }
+
                 mHandler.postDelayed(mUpdateProgressTask, UPDATE_PERIOD);
             }
         }
@@ -333,6 +341,10 @@ public class AudioPlayer implements OnPreparedListener, OnErrorListener, MusicFo
     public void onCompletion(MediaPlayer mp) {
         mHandler.removeCallbacks(mUpdateProgressTask);
         if(mStateUpdater!=null) mStateUpdater.onStop();
+    }
+
+    public void reset() {
+        onDestroy();
     }
 
     public void onDestroy() {

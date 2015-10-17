@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
@@ -16,8 +15,6 @@ import com.tac.media.audioplayer.AudioPlayer;
 import com.tac.media.audioplayer.enums.State;
 import com.tac.media.audioplayer.interfaces.ProgressUpdater;
 import com.tac.media.audioplayer.interfaces.TimeUpdater;
-
-import java.text.SimpleDateFormat;
 
 import appicon.funakoshi.com.apploadiconasync.R;
 
@@ -30,8 +27,8 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
     private Uri uri;
     private RoundCornerProgressBar progressBar;
     private ToggleButton playPause;
-    private TextView currentTime;
-    private TextView totalTime;
+    private TimeTextView currentTime;
+    private TimeTextView totalTime;
 
     public PlayerView(Context context) {
         super(context);
@@ -57,8 +54,8 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
         }
         setOrientation(VERTICAL);
         playPause = ((ToggleButton) findViewById(R.id.play_pause));
-        currentTime = (TextView) findViewById(R.id.tvCurrentTime);
-        totalTime = (TextView) findViewById(R.id.tvTotalTime);
+        currentTime = (TimeTextView) findViewById(R.id.tvCurrentTime);
+        totalTime = (TimeTextView) findViewById(R.id.tvTotalTime);
 
         findViewById(R.id.iv_close).setOnClickListener(this);
         findViewById(R.id.iv_repeat).setOnClickListener(this);
@@ -73,22 +70,33 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
 
         audioPlayer = new AudioPlayer(context);
         audioPlayer.setProgressUpdate(new ProgressUpdater() {
-            @UiThread
+
             @Override
             public void onProgressUpdate(int progress) {
                 progressBar.setProgress(progress);
+            }
+
+            @Override
+            public void onFinish() {
+                progressBar.setProgress(0);
+                currentTime.resetTime();
             }
         });
 
         audioPlayer.setTimeUpdater(new TimeUpdater() {
             @Override
             public void updateTime(long millis) {
-                currentTime.setText(new SimpleDateFormat("mm:ss").format(millis));
+                currentTime.setTime(millis);
+            }
+
+            @Override
+            public void onStart(long duration) {
+                totalTime.setTime(duration);
             }
 
             @Override
             protected void onChangeDuration(long newDurationMilis) {
-                totalTime.setText(new SimpleDateFormat("mm:ss").format(newDurationMilis));
+                totalTime.setTime(newDurationMilis);
             }
         });
     }
@@ -120,12 +128,14 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
                 break;
             case R.id.iv_close :
                 PlayerView.this.setVisibility(View.GONE);
+                reset();
                 break;
         }
     }
 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        audioPlayer.onDestroy();
     }
 
     protected void onAttachedToWindow() {
@@ -135,11 +145,14 @@ public class PlayerView extends LinearLayout implements View.OnClickListener, Co
 
     private void resetProgressState() {
         progressBar.setProgress(0);
+        currentTime.resetTime();
+        totalTime.resetTime();
     }
 
     private void reset() {
         resetProgressState();
         playPause.setChecked(true);
+        audioPlayer.reset();
     }
 
     @UiThread
