@@ -39,7 +39,7 @@ public class AudioPlayer implements OnPreparedListener, OnErrorListener, MusicFo
 
     private AudioFocusHelper mAudioFocusHelper = null;
 
-    private State mCurrentState;
+    private State mCurrentState = State.Preparing;
 
     private AudioFocus mAudioFocus = AudioFocus.NoFocusNoDuck;
 
@@ -69,7 +69,10 @@ public class AudioPlayer implements OnPreparedListener, OnErrorListener, MusicFo
                 int duration = mPlayer.getDuration();
                 int currentPosition = mPlayer.getCurrentPosition();
                 mProgressUpdate.onProgressUpdate(HUNDRED_PERCENT * currentPosition / duration);
-                if(mTimeUpdater!=null) mTimeUpdater.updateTime(currentPosition);
+                if(mTimeUpdater!=null) {
+                    mTimeUpdater.updateTime(currentPosition);
+                    mTimeUpdater.changeDuration(duration);
+                }
                 mHandler.postDelayed(mUpdateProgressTask, UPDATE_PERIOD);
             }
         }
@@ -84,6 +87,10 @@ public class AudioPlayer implements OnPreparedListener, OnErrorListener, MusicFo
         mMediaButtonReceiverComponent = new ComponentName(context, MusicIntentReceiver.class);
         mHandler = new Handler();
         initRemoteControlClient();
+    }
+
+    public State getCurrentState() {
+        return mCurrentState;
     }
 
     private void initRemoteControlClient(){

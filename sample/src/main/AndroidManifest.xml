@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="appicon.funakoshi.com.apploadiconasync" >
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,12 +17,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".AppsActivity"
-            android:label="new way" />
-
-        <activity android:name=".AppsActivityWithLags"
-                  android:label="old way"/>
 
     </application>
 

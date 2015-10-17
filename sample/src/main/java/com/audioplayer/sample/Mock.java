@@ -8,7 +8,7 @@ import java.io.File;
 /**
  * Created by max on 14.10.15.
  */
-public class Model {
+public class Mock {
 
     private static File musicFile;
 
@@ -18,5 +18,5 @@ public class Model {
         musicFile = new File(path, "test.mp3");
     }
 
-    public final Uri MP3_URI = Uri.fromFile(musicFile);
+    public static final Uri MP3_URI = Uri.fromFile(musicFile);
 }
